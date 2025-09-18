@@ -1,24 +1,45 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { TextDocument } from "./text-document";
+import { Paragraph } from "./paragraph";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const jsonFilePath = "games.json";
+const htmlFilePath = "index.html";
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+main();
+
+function init() {
+  document.addEventListener("DOMContentLoaded", () => {
+    createGameReviewDocument();
+  });
+}
+
+async function createGameReviewDocument() {
+  const data = await importJSON(jsonFilePath);
+  console.log(data);
+  const paragraphs: Paragraph[] = data.games.map(
+    (game: { title: string; rating: number, en_wiki: string }) =>
+      new Paragraph(
+        game.title,
+        game.rating,
+        game.en_wiki,
+        game.rating > 4.8 ? "felett" : game.rating < 4 ? "alatt" : ""
+      )
+  );
+  const doc = new TextDocument(htmlFilePath);
+  doc.paragraphs = paragraphs;
+  doc.writeHTML();
+}
+
+async function main() {
+  init();
+}
+
+async function importJSON(filePath: string): Promise<any> {
+  return fetch(filePath)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error("Error loading JSON:", error);
+    });
+}

@@ -1,2 +1,4 @@
-BE + FE Dolgozat 2025. 09. 18
-Public mappában megtalálható a kiegészített CSV fájl
+## BE + FE Dolgozat  
+**Dátum:** 2025. 09. 18
+
+A kiegészített CSV fájl a `Public` mappában található.
